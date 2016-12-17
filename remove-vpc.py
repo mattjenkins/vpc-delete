@@ -20,13 +20,15 @@ VERBOSE = 1
 
 def get_regions():
   """ Build a region list """
-
   reg_list = []
   for reg in boto.vpc.regions():
-    if reg.name == 'us-gov-west-1' or reg.name == 'cn-north-1':
-      continue
-    reg_list.append(reg)
-
+  # #----- This is to deny specific regions :
+  #  if reg.name == 'sa-gov-west-1' or reg.name == 'cn-north-1':
+  #    continue
+  #  reg_list.append(reg)
+  # #----- OR This is to include specific regions : 
+    if reg.name == 'sa-east-1' or reg.name == 'ap-northeast-2':
+        reg_list.append(reg)
   return reg_list
 
 def del_igw(conn, vpcid):
