@@ -22,13 +22,16 @@ def get_regions():
   """ Build a region list """
   reg_list = []
   for reg in boto.vpc.regions():
+  
   # #----- This is to deny specific regions :
-  #  if reg.name == 'sa-gov-west-1' or reg.name == 'cn-north-1':
-  #    continue
-  #  reg_list.append(reg)
+    if reg.name == 'us-east-1' or reg.name == 'us-west-2' or reg.name == 'ap-southeast-2':
+      continue
+    reg_list.append(reg)
+  
   # #----- OR This is to include specific regions : 
-    if reg.name == 'sa-east-1' or reg.name == 'ap-northeast-2':
-        reg_list.append(reg)
+  #  if reg.name == 'sa-east-1' or reg.name == 'ap-northeast-2':
+  #      reg_list.append(reg)
+  
   return reg_list
 
 def del_igw(conn, vpcid):
@@ -128,7 +131,10 @@ def main(keyid, secret):
   for region in regions:
     try:
       conn = boto.vpc.VPCConnection(aws_access_key_id=keyid, aws_secret_access_key=secret, region=region)
-      attributes = conn.describe_account_attributes(attribute_names='default-vpc')
+      try: 
+        attributes = conn.describe_account_attributes(attribute_names='default-vpc')
+      except:
+        continue
     except boto.exception.EC2ResponseError as e:
       print(e.message)
       exit(1)
